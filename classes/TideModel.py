@@ -131,24 +131,24 @@ class TideModel:
         limit = self.prediction_length*((df.shape[0]-context_length)//self.prediction_length)+context_length
         df = df.tail(limit)
 
-        train_past, val_past, series_past = self.prepare_covs(df, self.past_covs)
-        train_future, val_future, series_future = self.prepare_covs(df, self.future_covs)
+        # train_past, val_past, series_past = self.prepare_covs(df, self.past_covs)
+        # train_future, val_future, series_future = self.prepare_covs(df, self.future_covs)
 
         data = {
             'future': {},
             'past': {},
             'target': {},
         }
-        data['past']={
-            'train': train_past,
-            'val': val_past,
-            'series': series_past,
-        }
-        data['future']={
-            'train': train_future,
-            'val': val_future,
-            'series': series_future,
-        }
+        # data['past']={
+        #     'train': train_past,
+        #     'val': val_past,
+        #     'series': series_past,
+        # }
+        # data['future']={
+        #     'train': train_future,
+        #     'val': val_future,
+        #     'series': series_future,
+        # }
         train, val, series, scaler = self.prepare_time_series(df, target=self.target)
         data['target']={
             'train': train,
@@ -199,10 +199,10 @@ class TideModel:
         model.fit(
             series=data['target']['train'],
             val_series=data['target']['val'],
-            past_covariates=data['past']['train'],
-            val_past_covariates=data['past']['val'],
-            future_covariates=data['future']['train'],
-            val_future_covariates=data['future']['val'],
+            # past_covariates=data['past']['train'],
+            # val_past_covariates=data['past']['val'],
+            # future_covariates=data['future']['train'],
+            # val_future_covariates=data['future']['val'],
             verbose=True
         )
         best_model = self.load_best_model()
@@ -213,8 +213,8 @@ class TideModel:
         data, scaler = self.process_data()
         pred_series = model.historical_forecasts(
             data["target"]["series"],
-            future_covariates = data["future"]["series"],
-            past_covariates = data["past"]["series"],
+            # future_covariates = data["future"]["series"],
+            # past_covariates = data["past"]["series"],
             forecast_horizon=self.prediction_length,
             # stride=self.prediction_length,
             stride=1,
@@ -232,8 +232,8 @@ class TideModel:
         pred_series = model.predict(
             self.prediction_length,
             data["target"]["series"].head(-self.prediction_length),
-            future_covariates = data["future"]["series"],
-            past_covariates = data["past"]["series"].head(-self.prediction_length),
+            # future_covariates = data["future"]["series"],
+            # past_covariates = data["past"]["series"].head(-self.prediction_length),
         )
         return scaler.inverse_transform(pred_series)
 

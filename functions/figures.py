@@ -76,6 +76,7 @@ def histPlot(data, info, ROWS, COLUMNS, BINS, filename):
 def Plot(data, info, ROWS, COLUMNS, filename):
     from matplotlib.backends.backend_pdf import PdfPages
     import matplotlib.pyplot as plt
+    from matplotlib.ticker import MultipleLocator
 
     # Количество строк и столбоц на одной строке
 
@@ -89,10 +90,13 @@ def Plot(data, info, ROWS, COLUMNS, filename):
     figure = plt.figure(figsize=(6, info['height']))
     plt.rcParams['font.size'] = 14
     plt.rcParams["axes.edgecolor"] = "0.15"
-    plt.rcParams["axes.linewidth"]  = 1.25
-    figure.subplots_adjust(hspace=.4, wspace=.4)
+    plt.rcParams["axes.linewidth"]  = 1.0
+
+    figure.subplots_adjust(hspace=info['hspace'], wspace=info['wspace'])
     # figure.subplots_adjust(left=0.1, right=0.95, top=0.8, bottom=0.15)
     axes = figure.subplots(ROWS, COLUMNS, sharex=info['sharex'], sharey=info['sharey'])
+
+
 
     if ROWS+COLUMNS == 2:
         for i in range(len(data[index])):
@@ -104,6 +108,8 @@ def Plot(data, info, ROWS, COLUMNS, filename):
         axes.set_title(info['titles'][0])
         axes.set_xlabel(info['xlabels'][0])
         axes.set_ylabel(info['ylabels'][0])
+        if 'nbins' in info:
+            axes.xaxis.set_major_locator(MultipleLocator(base=info['nbins']))
 
     elif ROWS == 1 or COLUMNS == 1:
         for row in range(ROWS):
@@ -118,6 +124,9 @@ def Plot(data, info, ROWS, COLUMNS, filename):
                 axes[index].set_title(info['titles'][index])
                 axes[index].set_xlabel(info['xlabels'][index])
                 axes[index].set_ylabel(info['ylabels'][index])
+
+                if 'nbins' in info:
+                    axes[index].xaxis.set_major_locator(MultipleLocator(base=info['nbins']))
 
 
                 index += 1
@@ -135,9 +144,13 @@ def Plot(data, info, ROWS, COLUMNS, filename):
                 axes[row, column].set_xlabel(info['xlabels'][index])
                 axes[row, column].set_ylabel(info['ylabels'][index])
 
+                if 'nbins' in info:
+                    axes[row, column].xaxis.set_major_locator(MultipleLocator(base=info['nbins']))
+
 
                 index += 1
 
+    # plt.tight_layout()
     # Сохраняем страницу
     pdf.savefig(figure)
 

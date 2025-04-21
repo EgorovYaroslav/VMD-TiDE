@@ -35,6 +35,7 @@ class TideModel:
         tuned='default',
         target = 'IMF1',
         mode = 'train',
+        device='cuda',
         split_date='2008-12-01',
         past_covariates=['sdn'],
         future_covariates=['crn'],
@@ -44,6 +45,7 @@ class TideModel:
         self.df = df
         self.mode = mode
         self.tuned = tuned
+        self.device = device
         self.target = target
         self.past_covs = past_covariates
         self.future_covs = future_covariates
@@ -57,7 +59,7 @@ class TideModel:
     def generate_torch_kwargs(self):
         return {
             "pl_trainer_kwargs": {
-                "accelerator": "cuda",
+                "accelerator": self.device,
                 "callbacks": [TFMProgressBar(enable_train_bar_only=True)],
             }
         }

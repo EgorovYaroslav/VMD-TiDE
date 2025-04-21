@@ -14,6 +14,7 @@ class ForecastModel:
     def __init__(
         self,
         prediction_length,
+        device='cuda',
         context_length = 0,
         alias='',
         tuned='default',
@@ -26,6 +27,7 @@ class ForecastModel:
         self.context_length = context_length
         self.prediction_length = prediction_length
         self.tuned = tuned
+        self.device = device
         self.past_covs = past_covariates
         self.future_covs = future_covariates
         self.alias = alias
@@ -71,22 +73,37 @@ class ForecastModel:
         return df
 
     def vmd_decompose(self, df, alpha=2626, tau=0, K=3, DC=0, init=1, tol=1e-7):
+        """
+        Variational Mode Decomposition (VMD) of a time series
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+            Dataframe with a column 'real' containing the time series data
+        alpha : float, optional
+            Moderate bandwidth constraint, by default 2626
+        tau : float, optional
+            Noise-tolerance (no strict fidelity enforcement), by default 0
+        K : int, optional
+            Number of modes, by default 3
+        DC : int, optional
+            No DC part imposed, by default 0
+        init : int, optional
+            Initialize omegas uniformly, by default 1
+        tol : float, optional
+            Tolerance, by default 1e-7
+
+        Returns
+        -------
+        pandas.DataFrame
+            Dataframe with the decomposed time series columns 'IMF1', 'IMF2', 'IMF3'
+        """
         f = df.real.values
-        #. some sample parameters for VMD
-        # alpha = 2626       # moderate bandwidth constraint
-        # tau = 0.            # noise-tolerance (no strict fidelity enforcement)
-        # K = 3              # 3 modes
-        # DC = 0             # no DC part imposed
-        # init = 1           # initialize omegas uniformly
-        # tol = 1e-7
-        #. Run VMD
         u, u_hat, omega = VMD(f, alpha, tau, K, DC, init, tol)
         check_shape = f.shape[0]==u.T.shape[0]
-        # residuals = f-np.sum(u.T, axis=1) if check_shape else f[1:]-np.sum(u.T, axis=1)
 
         column_headers = ['IMF1', 'IMF2', 'IMF3']
-        # residuals = residuals[:, np.newaxis]
-        # result = np.hstack(u.T)
+
         df2 = pd.DataFrame(u.T, columns=column_headers)
         df2.index = df.index if check_shape else df.index[1:]
 
@@ -121,7 +138,7 @@ class ForecastModel:
 
     def prepare_model(self, df, imf, mode='train'):
         model_name = f'{self.alias}_adj_{self.tuned}_{imf}'
-        return TideModel(df, self.context_length, self.prediction_length, model_name=model_name, target=imf, tuned = self.tuned,past_covariates=self.past_covs, future_covariates=self.future_covs, mode=mode, split_date = self.split_date)
+        return TideModel(df, self.context_length, self.prediction_length, model_name=model_name, target=imf, tuned = self.tuned,past_covariates=self.past_covs, future_covariates=self.future_covs, mode=mode, split_date = self.split_date, device=self.device)
 
     def train(self):
         df = self.process_data()

@@ -3,7 +3,17 @@ import functions.db as db
 import pandas as pd
 import requests
 from datetime import timedelta
-from data.f107 import get_train_data
+from scipy.signal import savgol_filter
+from datetime import datetime
+
+def get_train_data(db_name='data3',smooth=0, cutoff = datetime.today().strftime('%Y-%m-%d')):
+    df = db.select_rows(f"SELECT * from data WHERE date<='{cutoff}' order by date")
+    df.date = df.date.astype('datetime64[ns]')
+    df.index = df.date
+    if smooth>0:
+        df['real'] = savgol_filter(df['real'], smooth, 3)
+    df = df[df.date<pd.to_datetime(cutoff)]
+    return df
 
 def convert_date_to_crn(date):
     return crn(date)

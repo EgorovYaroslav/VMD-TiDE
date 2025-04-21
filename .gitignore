@@ -10,3 +10,4 @@ save/*
 *.pdf
 nohup.out
 f30/*
+generate_requirements.py

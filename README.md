@@ -115,7 +115,7 @@ How to train and predict with the model can be found in the `example.ipynb` Jupy
 
 Run the Decomposition of Original Signal:
 ```bash
-python3 regular_job.py
+python3 data_decompose.py
 ```
 
 Run training and prediction for a 7-day horizon:

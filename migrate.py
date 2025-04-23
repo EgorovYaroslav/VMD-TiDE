@@ -111,15 +111,15 @@ def setup_database(schema=None):
 
     # List of tables to create
     tables_to_create = [
-        Data.__tablename__,
-        Forecast7.__tablename__,
-        Forecast27.__tablename__,
-        DataDecomposed.__tablename__,
+        # Data.__tablename__,
+        # Forecast7.__tablename__,
+        # Forecast27.__tablename__,
+        # DataDecomposed.__tablename__,
         SolarCycles.__tablename__,
     ]
 
     # Filter tables that do not exist
-    tables_to_create = [table for table in tables_to_create if table not in existing_tables]
+    # tables_to_create = [table for table in tables_to_create if table not in existing_tables]
 
     if tables_to_create:
         print(f"Creating tables: {', '.join(tables_to_create)}")
@@ -172,7 +172,7 @@ if __name__ == "__main__":
         # restore_data_from_sql_file(engine, "data.sql", schema=os.getenv("DB_SCHEMA", "public"))
 
         # Restore data from the SQL file into the database
-        # restore_data_from_sql_file(engine, "solar_cycles.sql", schema=os.getenv("DB_SCHEMA", "public"))
+        restore_data_from_sql_file(engine, "solar_cycles.sql", schema=os.getenv("DB_SCHEMA", "public"))
 
     except Exception as e:
         print(f"An error occurred: {e}")

@@ -14,7 +14,7 @@ Before you begin, ensure that you have the following installed on your system:
 
 ## Installation Steps
 
-## Step 3: Install PostgreSQL
+### Step 0: Install PostgreSQL
 Install PostgreSQL and create a database for the project:
 ```bash
 sudo apt install postgresql postgresql-contrib -y
@@ -54,7 +54,7 @@ git clone https://git.iszf.irk.ru/diegon/f107.git
 cd f107
 ```
 
-### Step 3: Install Dependencies
+### Step 2: Install Dependencies
 Install the required dependencies listed in the `requirements.txt` file using `pip`:
 
 ```bash
@@ -72,24 +72,9 @@ How to train and predict with model you can find in `example.ipynb` Jupyter Note
 
 
 
----
-
-## Additional Notes
-- If you encounter any issues during installation, ensure that Python 3.10 is correctly installed and accessible in your system's PATH.
-- To deactivate the virtual environment, simply run:
-  ```bash
-  deactivate
-  ```
-
----
-
-## Contribution
-If you wish to contribute to this project, please fork the repository and submit a pull request with your changes. Ensure that your code adheres to the project's coding standards.
-
----
 
 ## License
-This project is licensed under [insert license here]. See the `LICENSE` file for more details.
+This project is licensed under GPL-3.0. See the `LICENSE` file for more details.
 
 ---
 

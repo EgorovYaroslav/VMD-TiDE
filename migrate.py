@@ -108,18 +108,19 @@ def setup_database(schema=None):
     # Check if tables exist before creating them
     inspector = inspect(engine)
     existing_tables = inspector.get_table_names(schema=schema or "public")
+    print(existing_tables)
 
     # List of tables to create
     tables_to_create = [
-        # Data.__tablename__,
-        # Forecast7.__tablename__,
-        # Forecast27.__tablename__,
-        # DataDecomposed.__tablename__,
+        Data.__tablename__,
+        Forecast7.__tablename__,
+        Forecast27.__tablename__,
+        DataDecomposed.__tablename__,
         SolarCycles.__tablename__,
     ]
 
     # Filter tables that do not exist
-    # tables_to_create = [table for table in tables_to_create if table not in existing_tables]
+    tables_to_create = [table for table in tables_to_create if table not in existing_tables]
 
     if tables_to_create:
         print(f"Creating tables: {', '.join(tables_to_create)}")

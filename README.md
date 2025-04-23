@@ -58,6 +58,16 @@ cd f107
 Install the required dependencies listed in the `requirements.txt` file using `pip`:
 
 ```bash
+sudo apt install python3-pip
+sudo apt install python3-venv
+```
+
+```bash
+python3 -m venv forecast
+source forecast/bin/activate
+```
+
+```bash
 pip install --upgrade pip
 pip install -r requirements.txt
 ```

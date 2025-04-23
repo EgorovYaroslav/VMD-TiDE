@@ -36,6 +36,8 @@ GRANT ALL PRIVILEGES ON DATABASE forecast_project TO forecast_user;
 \q
 psql -U postgres -d forecast_project
 CREATE SCHEMA f107;
+GRANT USAGE ON SCHEMA f107 TO forecast_user;
+GRANT CREATE ON SCHEMA f107 TO forecast_user;
 \q
 exit
 ```

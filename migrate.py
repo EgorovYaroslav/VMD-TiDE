@@ -1,6 +1,6 @@
 import os
-from sqlalchemy import create_engine, Column, Integer, Float, TIMESTAMP
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, Column, Integer, Float, TIMESTAMP, inspect
+from sqlalchemy.orm import declarative_base  # Updated import for declarative_base
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Define the base class for ORM models
-Base = declarative_base()
+Base = declarative_base()  # Updated usage of declarative_base
 
 # Function to set up the database and create tables
 def setup_database(schema=None):
@@ -36,9 +36,27 @@ def setup_database(schema=None):
     # Bind the schema to the metadata if provided
     Base.metadata.schema = schema
 
-    # Create all tables if they don't exist
-    Base.metadata.create_all(engine)
-    print("Tables created successfully!")
+    # Check if tables exist before creating them
+    inspector = inspect(engine)
+    existing_tables = inspector.get_table_names(schema=schema or "public")
+
+    # List of tables to create
+    tables_to_create = [
+        Data.__tablename__,
+        Forecast7.__tablename__,
+        Forecast27.__tablename__,
+        DataDecomposed.__tablename__,
+    ]
+
+    # Filter tables that do not exist
+    tables_to_create = [table for table in tables_to_create if table not in existing_tables]
+
+    if tables_to_create:
+        print(f"Creating tables: {', '.join(tables_to_create)}")
+        Base.metadata.create_all(engine, tables=[Base.metadata.tables[table] for table in tables_to_create])
+    else:
+        print("All tables already exist. No new tables created.")
+
     return engine
 
 
@@ -112,7 +130,10 @@ if __name__ == "__main__":
 
         # Example: Verify tables were created by listing them (optional)
         with engine.connect() as conn:
-            result = conn.execute("SELECT table_name FROM information_schema.tables WHERE table_schema=%s", (os.getenv("DB_SCHEMA", "public"),))
+            result = conn.execute(
+                "SELECT table_name FROM information_schema.tables WHERE table_schema=%s",
+                (os.getenv("DB_SCHEMA", "public"),),
+            )
             tables = result.fetchall()
             print("Tables in database:")
             for table in tables:

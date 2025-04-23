@@ -10,6 +10,64 @@ load_dotenv()
 # Define the base class for ORM models
 Base = declarative_base()  # Updated usage of declarative_base
 
+# Table: data
+class Data(Base):
+    __tablename__ = 'data'
+    __table_args__ = {'schema': os.getenv("DB_SCHEMA", "public")}  # Use schema from .env or default to 'public'
+
+    id = Column(Integer, primary_key=True)
+    date = Column(TIMESTAMP, nullable=False)
+    real = Column(Float)
+    crn = Column(Float)
+    cycle_day_number = Column(Float)
+    sdn = Column(Float)
+
+# Table: forecast_7
+class Forecast7(Base):
+    __tablename__ = 'forecast_7'
+    __table_args__ = {'schema': os.getenv("DB_SCHEMA", "public")}  # Use schema from .env or default to 'public'
+
+    index = Column(Integer, primary_key=True)
+    date = Column(TIMESTAMP, nullable=False)
+    value = Column(Float)
+
+# Table: forecast_27
+class Forecast27(Base):
+    __tablename__ = 'forecast_27'
+    __table_args__ = {'schema': os.getenv("DB_SCHEMA", "public")}  # Use schema from .env or default to 'public'
+
+    index = Column(Integer, primary_key=True)
+    date = Column(TIMESTAMP, nullable=False)
+    value = Column(Float)
+
+# Table: data_decomposed
+class DataDecomposed(Base):
+    __tablename__ = 'data_decomposed'
+    __table_args__ = {'schema': os.getenv("DB_SCHEMA", "public")}  # Use schema from .env or default to 'public'
+
+    id = Column(Integer, primary_key=True)
+    date = Column(TIMESTAMP, nullable=False)
+    real = Column(Float)
+    crn = Column(Float)
+    cycle_day_number = Column(Float)
+    sdn = Column(Float)
+    IMF1 = Column(Float)
+    IMF2 = Column(Float)
+    IMF3 = Column(Float)
+    R = Column(Float)
+    IMF1_1 = Column(Float)
+    IMF1_2 = Column(Float)
+    IMF1_3 = Column(Float)
+    IMF2_1 = Column(Float)
+    IMF2_2 = Column(Float)
+    IMF2_3 = Column(Float)
+    IMF3_1 = Column(Float)
+    IMF3_2 = Column(Float)
+    IMF3_3 = Column(Float)
+    R_1 = Column(Float)
+    R_2 = Column(Float)
+    R_3 = Column(Float)
+
 # Function to set up the database and create tables
 def setup_database(schema=None):
     """
@@ -60,66 +118,36 @@ def setup_database(schema=None):
     return engine
 
 
-# Table: data
-class Data(Base):
-    __tablename__ = 'data'
-    __table_args__ = {'schema': os.getenv("DB_SCHEMA", "public")}  # Use schema from .env or default to 'public'
+# Function to restore data from an SQL file into the database
+def restore_data_from_sql_file(engine, sql_file_path, schema=None):
+    """
+    Restores data from an SQL file into the database.
+    :param engine: SQLAlchemy engine object.
+    :param sql_file_path: Path to the SQL file containing the data dump.
+    :param schema: Optional PostgreSQL schema name (default is 'public').
+    """
+    if not os.path.exists(sql_file_path):
+        raise FileNotFoundError(f"SQL file not found: {sql_file_path}")
 
-    id = Column(Integer, primary_key=True)
-    date = Column(TIMESTAMP, nullable=False)
-    real = Column(Float)
-    crn = Column(Float)
-    cycle_day_number = Column(Float)
-    sdn = Column(Float)
+    try:
+        # Read the SQL file content
+        with open(sql_file_path, 'r') as file:
+            sql_content = file.read()
 
+        # Execute the SQL content using the engine
+        with engine.connect() as conn:
+            # Optionally set the search path to the specified schema
+            if schema:
+                conn.execute(f"SET search_path TO {schema}")
+            conn.execute(sql_content)
+            conn.commit()
+        print("Data successfully restored from SQL file!")
 
-# Table: forecast_7
-class Forecast7(Base):
-    __tablename__ = 'forecast_7'
-    __table_args__ = {'schema': os.getenv("DB_SCHEMA", "public")}  # Use schema from .env or default to 'public'
-
-    index = Column(Integer, primary_key=True)
-    date = Column(TIMESTAMP, nullable=False)
-    value = Column(Float)
-
-
-# Table: forecast_27
-class Forecast27(Base):
-    __tablename__ = 'forecast_27'
-    __table_args__ = {'schema': os.getenv("DB_SCHEMA", "public")}  # Use schema from .env or default to 'public'
-
-    index = Column(Integer, primary_key=True)
-    date = Column(TIMESTAMP, nullable=False)
-    value = Column(Float)
-
-
-# Table: data_decomposed
-class DataDecomposed(Base):
-    __tablename__ = 'data_decomposed'
-    __table_args__ = {'schema': os.getenv("DB_SCHEMA", "public")}  # Use schema from .env or default to 'public'
-
-    id = Column(Integer, primary_key=True)
-    date = Column(TIMESTAMP, nullable=False)
-    real = Column(Float)
-    crn = Column(Float)
-    cycle_day_number = Column(Float)
-    sdn = Column(Float)
-    IMF1 = Column(Float)
-    IMF2 = Column(Float)
-    IMF3 = Column(Float)
-    R = Column(Float)
-    IMF1_1 = Column(Float)
-    IMF1_2 = Column(Float)
-    IMF1_3 = Column(Float)
-    IMF2_1 = Column(Float)
-    IMF2_2 = Column(Float)
-    IMF2_3 = Column(Float)
-    IMF3_1 = Column(Float)
-    IMF3_2 = Column(Float)
-    IMF3_3 = Column(Float)
-    R_1 = Column(Float)
-    R_2 = Column(Float)
-    R_3 = Column(Float)
+    except Exception as e:
+        print(f"An error occurred while restoring data: {e}")
+        if engine:
+            with engine.connect() as conn:
+                conn.rollback()
 
 
 # Example usage
@@ -127,6 +155,12 @@ if __name__ == "__main__":
     try:
         # Set up the database and create tables
         engine = setup_database(schema=os.getenv("DB_SCHEMA", "public"))  # Use schema from .env or default to 'public'
+
+        # Path to the SQL file containing the data dump
+        SQL_FILE_PATH = "data.sql"
+
+        # Restore data from the SQL file into the database
+        restore_data_from_sql_file(engine, SQL_FILE_PATH, schema=os.getenv("DB_SCHEMA", "public"))
 
     except Exception as e:
         print(f"An error occurred: {e}")

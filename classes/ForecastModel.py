@@ -131,9 +131,9 @@ class ForecastModel:
             df[f'{imf}_2'] = df2['IMF2']
             df[f'{imf}_3'] = df2['IMF3']
         # return df
-        db.insert_df('data_decomposed_twice', df)
+        db.insert_df('data_decomposed', df)
 
-    def process_data(self, mode="train", table='data_decomposed_twice'):
+    def process_data(self, mode="train", table='data_decomposed'):
         df = self.get_data(table=table)
         if mode == 'forecast':
             df = self.add_future_points_to_df(df)
@@ -150,7 +150,7 @@ class ForecastModel:
             model.train()
 
     def train_imf(self, imf):
-        df = self.process_data(table='data_decomposed_twice')
+        df = self.process_data(table='data_decomposed')
         model = self.prepare_model(df, imf)
         model.train()
 

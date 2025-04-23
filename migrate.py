@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import create_engine, Column, Integer, Float, TIMESTAMP, inspect, text
+from sqlalchemy import create_engine, Column, Integer, Float, TIMESTAMP, Date, inspect, text
 from sqlalchemy.orm import declarative_base  # Updated import for declarative_base
 # from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
@@ -21,6 +21,17 @@ class Data(Base):
     crn = Column(Float)
     cycle_day_number = Column(Float)
     sdn = Column(Float)
+
+# Table: solar_cycles
+class SolarCycles(Base):
+    __tablename__ = 'solar_cycles'
+    __table_args__ = {'schema': os.getenv("DB_SCHEMA", "public")}  # Use schema from .env or default to 'public'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Integer)
+    starts = Column(Date)
+    peak = Column(Date)
+    ends = Column(Date)
 
 # Table: forecast_7
 class Forecast7(Base):
@@ -104,6 +115,7 @@ def setup_database(schema=None):
         Forecast7.__tablename__,
         Forecast27.__tablename__,
         DataDecomposed.__tablename__,
+        SolarCycles.__tablename__,
     ]
 
     # Filter tables that do not exist
@@ -156,11 +168,11 @@ if __name__ == "__main__":
         # Set up the database and create tables
         engine = setup_database(schema=os.getenv("DB_SCHEMA", "public"))  # Use schema from .env or default to 'public'
 
-        # Path to the SQL file containing the data dump
-        SQL_FILE_PATH = "data.sql"
+        # Restore data from the SQL file into the database
+        restore_data_from_sql_file(engine, "data.sql", schema=os.getenv("DB_SCHEMA", "public"))
 
         # Restore data from the SQL file into the database
-        restore_data_from_sql_file(engine, SQL_FILE_PATH, schema=os.getenv("DB_SCHEMA", "public"))
+        restore_data_from_sql_file(engine, "solar_cycles.sql", schema=os.getenv("DB_SCHEMA", "public"))
 
     except Exception as e:
         print(f"An error occurred: {e}")

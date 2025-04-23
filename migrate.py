@@ -1,7 +1,7 @@
 import os
 from sqlalchemy import create_engine, Column, Integer, Float, TIMESTAMP, inspect, text
 from sqlalchemy.orm import declarative_base  # Updated import for declarative_base
-from sqlalchemy.orm import sessionmaker
+# from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
 # Load environment variables from .env file

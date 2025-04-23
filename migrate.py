@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import create_engine, Column, Integer, Float, TIMESTAMP, inspect
+from sqlalchemy import create_engine, Column, Integer, Float, TIMESTAMP, inspect, text
 from sqlalchemy.orm import declarative_base  # Updated import for declarative_base
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
@@ -138,8 +138,8 @@ def restore_data_from_sql_file(engine, sql_file_path, schema=None):
         with engine.connect() as conn:
             # Optionally set the search path to the specified schema
             if schema:
-                conn.execute(f"SET search_path TO {schema}")
-            conn.execute(sql_content)
+                conn.execute(text(f"SET search_path TO {schema}"))  # Use `text()` for raw SQL
+            conn.execute(text(sql_content))  # Use `text()` for raw SQL
             conn.commit()
         print("Data successfully restored from SQL file!")
 

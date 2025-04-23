@@ -98,11 +98,12 @@ def insert_df_rows(name, df):
                 cursor.close()
 
 def insert_df(name, df):
-    DB_USER = os.getenv("DB_USER")
-    DB_PASSWORD = os.getenv("DB_PASSWORD")
-    DB_HOST = os.getenv("DB_HOST")
-    DB_PORT = os.getenv("DB_PORT", "5432")  # Default PostgreSQL port
-    DB_NAME = os.getenv("DB_NAME")
+    config = dotenv_values(".env")
+    DB_USER = config["DB_USER"]
+    DB_PASSWORD = config["DB_PASSWORD"]
+    DB_HOST = config["DB_HOST"]
+    DB_PORT = config["DB_PORT"]  # Default PostgreSQL port
+    DB_NAME = config["DB_NAME"]
     DB_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
     engine = sqlalchemy.create_engine(DB_URL,connect_args={'options': '-csearch_path={}'.format('f107')})

@@ -29,9 +29,9 @@ class SolarCycles(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(Integer)
-    starts = Column(TIMESTAMP, nullable=False)
-    peak = Column(TIMESTAMP, nullable=False)
-    ends = Column(TIMESTAMP, nullable=False)
+    starts = Column(Date, nullable=False)
+    peak = Column(Date, nullable=False)
+    ends = Column(Date, nullable=False)
 
 # Table: forecast_7
 class Forecast7(Base):

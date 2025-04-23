@@ -128,15 +128,5 @@ if __name__ == "__main__":
         # Set up the database and create tables
         engine = setup_database(schema=os.getenv("DB_SCHEMA", "public"))  # Use schema from .env or default to 'public'
 
-        # Example: Verify tables were created by listing them (optional)
-        with engine.connect() as conn:
-            result = conn.execute(
-                "SELECT table_name FROM information_schema.tables WHERE table_schema=%s",
-                (os.getenv("DB_SCHEMA", "public"),),
-            )
-            tables = result.fetchall()
-            print("Tables in database:")
-            for table in tables:
-                print(table[0])
     except Exception as e:
         print(f"An error occurred: {e}")

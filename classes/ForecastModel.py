@@ -160,13 +160,13 @@ class ForecastModel:
             model = self.prepare_model(df, imf, mode=mode)
             pred, ans = model.predict_all()
             if imf == self.modes[0]:
-                predictions = pred.pd_dataframe()
-                answers = ans.pd_dataframe()
+                predictions = pred.to_dataframe()
+                answers = ans.to_dataframe()
             else:
                 # predictions = predictions.concatenate(pred,axis=1)
                 # answers = answers.concatenate(ans,axis=1)
-                predictions = pd.concat([predictions,pred.pd_dataframe()],axis=1)
-                answers = pd.concat([answers,ans.pd_dataframe()],axis=1)
+                predictions = pd.concat([predictions,pred.to_dataframe()],axis=1)
+                answers = pd.concat([answers,ans.to_dataframe()],axis=1)
         predictions = predictions.dropna()
         predictions['date'] = predictions.index
         predictions = TimeSeries.from_dataframe(predictions, 'date', self.modes)
@@ -183,9 +183,9 @@ class ForecastModel:
             model = self.prepare_model(df, imf, mode='forecast')
             pred = model.predict()
             if imf == self.modes[0]:
-                predictions = pred.pd_dataframe()
+                predictions = pred.to_dataframe()
             else:
-                predictions = pd.concat([predictions,pred.pd_dataframe()],axis=1)
+                predictions = pd.concat([predictions,pred.to_dataframe()],axis=1)
         predictions = predictions.dropna()
         predictions['date'] = predictions.index
         predictions = TimeSeries.from_dataframe(predictions, 'date', self.modes)
@@ -211,7 +211,7 @@ class ForecastModel:
         else:
             predictions = self.make_prediction()
         horizon = self.prediction_length
-        results = predictions.pd_dataframe().set_axis(['value'], axis=1)
+        results = predictions.to_dataframe().set_axis(['value'], axis=1)
         results['date'] = results.index
         results.reset_index(drop=True, inplace=True)
         results.index = results.index + 1

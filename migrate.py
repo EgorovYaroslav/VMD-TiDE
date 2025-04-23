@@ -29,9 +29,9 @@ class SolarCycles(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(Integer)
-    starts = Column(Date)
-    peak = Column(Date)
-    ends = Column(Date)
+    starts = Column(Date, nullable=False)
+    peak = Column(Date, nullable=False)
+    ends = Column(Date, nullable=False)
 
 # Table: forecast_7
 class Forecast7(Base):
@@ -172,7 +172,7 @@ if __name__ == "__main__":
         # restore_data_from_sql_file(engine, "data.sql", schema=os.getenv("DB_SCHEMA", "public"))
 
         # Restore data from the SQL file into the database
-        restore_data_from_sql_file(engine, "solar_cycles.sql", schema=os.getenv("DB_SCHEMA", "public"))
+        # restore_data_from_sql_file(engine, "solar_cycles.sql", schema=os.getenv("DB_SCHEMA", "public"))
 
     except Exception as e:
         print(f"An error occurred: {e}")

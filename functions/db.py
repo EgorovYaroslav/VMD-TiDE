@@ -4,7 +4,7 @@ from dotenv import dotenv_values
 from psycopg2 import sql
 from contextlib import closing
 import sqlalchemy
-
+import os
 import numpy as np
 from psycopg2.extensions import register_adapter, AsIs
 
@@ -40,11 +40,6 @@ def get_row(query):
     return row
 
 
-def num_rows(yht):
-    import functions.db as db
-    res = db.get_row("SELECT count(*) FROM results WHERE yht='"+str(yht)+"'")
-    return res.count
-
 def get_rows(query):
     config = dotenv_values(".env")
 
@@ -79,30 +74,6 @@ def update_row(query):
             cursor.execute(query)
 
 
-def add_result(name, values):
-    config = dotenv_values(".env")
-    with closing(psycopg2.connect(dbname=config['DB_NAME'], user=config['DB_USER'],
-                                  password=config['DB_PASSWORD'], host=config['DB_HOST'])) as conn:
-        with conn.cursor() as cursor:
-            conn.autocommit = True
-            cursor.execute(sql.SQL('SET search_path TO "'+str(config['DB_SCHEMA'])+'"'))
-            insert = sql.SQL('INSERT INTO '+str(name)+' (date_obs, phi, lamda, yht, pair,params,start_date) VALUES ({})').format(
-                sql.SQL(',').join(map(sql.Literal, values))
-            )
-            cursor.execute(insert)
-
-
-def add_row(name, values):
-    config = dotenv_values(".env")
-    with closing(psycopg2.connect(dbname=config['DB_NAME'], user=config['DB_USER'],
-                                  password=config['DB_PASSWORD'], host=config['DB_HOST'])) as conn:
-        with conn.cursor() as cursor:
-            conn.autocommit = True
-            cursor.execute(sql.SQL('SET search_path TO "'+str(config['DB_SCHEMA'])+'"'))
-            insert = sql.SQL('INSERT INTO '+str(name)+' VALUES (DEFAULT,{})').format(
-                sql.SQL(',').join(map(sql.Literal, values))
-            )
-            cursor.execute(insert)
 
 def insert_df_rows(name, df):
 
@@ -127,9 +98,13 @@ def insert_df_rows(name, df):
                 cursor.close()
 
 def insert_df(name, df):
-    # create a connection to the database
-    engine = sqlalchemy.create_engine('postgresql://postgres:asd123fgh@localhost:5432/postgres',
-        connect_args={'options': '-csearch_path={}'.format('f107')})
+    DB_USER = os.getenv("DB_USER")
+    DB_PASSWORD = os.getenv("DB_PASSWORD")
+    DB_HOST = os.getenv("DB_HOST")
+    DB_PORT = os.getenv("DB_PORT", "5432")  # Default PostgreSQL port
+    DB_NAME = os.getenv("DB_NAME")
+    DB_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
+    engine = sqlalchemy.create_engine(DB_URL,connect_args={'options': '-csearch_path={}'.format('f107')})
     # write the DataFrame to the database
     df.to_sql(name, engine, if_exists='replace', index=True)

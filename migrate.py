@@ -89,7 +89,7 @@ def setup_database(schema=None):
     DB_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
     # Create the database engine
-    engine = create_engine(DB_URL, echo=True)  # Set echo=False in production
+    engine = create_engine(DB_URL, echo=False)  # Set echo=False in production
 
     # Bind the schema to the metadata if provided
     Base.metadata.schema = schema

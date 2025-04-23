@@ -5,7 +5,7 @@ __pycache__/
 darts_logs/*
 screenshots/*
 models/*
-hyperparams/*
+# hyperparams/*
 save/*
 *.pdf
 nohup.out

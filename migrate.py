@@ -27,11 +27,11 @@ class SolarCycles(Base):
     __tablename__ = 'solar_cycles'
     __table_args__ = {'schema': os.getenv("DB_SCHEMA", "public")}  # Use schema from .env or default to 'public'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(Integer)
-    starts = Column(Date, nullable=False)
-    peak = Column(Date, nullable=False)
-    ends = Column(Date, nullable=False)
+    id = Column(Integer, primary_key=True)       # Primary key column
+    name = Column(Integer)                       # Name of the solar cycle (integer)
+    starts = Column(Date, nullable=False)        # Start date of the solar cycle
+    peak = Column(Date, nullable=False)          # Peak date of the solar cycle
+    ends = Column(Date, nullable=False)          # End date of the solar cycle
 
 # Table: forecast_7
 class Forecast7(Base):

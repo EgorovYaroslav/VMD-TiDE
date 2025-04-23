@@ -54,6 +54,14 @@ git clone https://git.iszf.irk.ru/diegon/f107.git
 cd f107
 ```
 
+## Step 6: Configure the Environment
+Copy the `.env.example` file to `.env`:
+```bash
+cp .env.example .env
+```
+
+Update the `.env` file with your environment-specific settings
+
 ### Step 2: Install Dependencies
 Install the required dependencies listed in the `requirements.txt` file using `pip`:
 
@@ -75,6 +83,12 @@ pip install -r requirements.txt
 This will install all the necessary packages and libraries for the project.
 
 ---
+
+## Step 8: Run Migrations
+Run the database migrations:
+```bash
+python3 migrate.py
+```
 
 ## Running the Project
 

@@ -170,7 +170,7 @@ if __name__ == "__main__":
         engine = setup_database(schema=os.getenv("DB_SCHEMA", "public"))  # Use schema from .env or default to 'public'
 
         # Restore data from the SQL file into the database
-        # restore_data_from_sql_file(engine, "data.sql", schema=os.getenv("DB_SCHEMA", "public"))
+        restore_data_from_sql_file(engine, "data.sql", schema=os.getenv("DB_SCHEMA", "public"))
 
         # Restore data from the SQL file into the database
         restore_data_from_sql_file(engine, "solar_cycles.sql", schema=os.getenv("DB_SCHEMA", "public"))

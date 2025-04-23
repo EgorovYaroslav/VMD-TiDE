@@ -6,6 +6,7 @@ import functions.utilites as util
 # import numpy as np
 from vmdpy import VMD
 import pandas as pd
+from torch.cuda import is_available
 from darts import TimeSeries
 from darts.metrics.metrics import mape, mae, rmse, smape
 
@@ -14,7 +15,6 @@ class ForecastModel:
     def __init__(
         self,
         prediction_length,
-        device='cuda',
         context_length = 0,
         alias='',
         tuned='default',
@@ -27,7 +27,10 @@ class ForecastModel:
         self.context_length = context_length
         self.prediction_length = prediction_length
         self.tuned = tuned
-        self.device = device
+        if is_available():
+            self.device = 'cuda'
+        else:
+            self.device = 'cpu'
         self.past_covs = past_covariates
         self.future_covs = future_covariates
         self.alias = alias

@@ -31,10 +31,10 @@ register_adapter(np.ndarray, addapt_numpy_array)
 
 def get_row(query):
     config = dotenv_values(".env")
-    with closing(psycopg2.connect(dbname=config['db_database'], user=config['db_user'],
-                                  password=config['db_password'], host=config['db_host'])) as conn:
+    with closing(psycopg2.connect(dbname=config['DB_NAME'], user=config['DB_USER'],
+                                  password=config['DB_PASSWORD'], host=config['DB_HOST'])) as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor) as cursor:
-            cursor.execute(sql.SQL('SET search_path TO "'+str(config['db_schema'])+'"'))
+            cursor.execute(sql.SQL('SET search_path TO "'+str(config['DB_SCHEMA'])+'"'))
             cursor.execute(query)
             row = cursor.fetchone()
     return row
@@ -48,10 +48,10 @@ def num_rows(yht):
 def get_rows(query):
     config = dotenv_values(".env")
 
-    with closing(psycopg2.connect(dbname=config['db_database'], user=config['db_user'],
-                                  password=config['db_password'], host=config['db_host'])) as conn:
+    with closing(psycopg2.connect(dbname=config['DB_NAME'], user=config['DB_USER'],
+                                  password=config['DB_PASSWORD'], host=config['DB_HOST'])) as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor) as cursor:
-            cursor.execute(sql.SQL('SET search_path TO "'+str(config['db_schema'])+'"'))
+            cursor.execute(sql.SQL('SET search_path TO "'+str(config['DB_SCHEMA'])+'"'))
             cursor.execute(query)
             row = cursor.fetchall()
     return row
@@ -62,8 +62,8 @@ def select_rows(query):
     config = dotenv_values(".env")
 
     conn = psycopg2.connect("host='{}' dbname='{}' user={} password={}".format(
-        config['db_host'], config['db_database'], config['db_user'], config['db_password']))
-    dat = pd.read_sql_query('SET search_path TO "'+str(config['db_schema'])+'"; '+query, conn)
+        config['DB_HOST'], config['DB_NAME'], config['DB_USER'], config['DB_PASSWORD']))
+    dat = pd.read_sql_query('SET search_path TO "'+str(config['DB_SCHEMA'])+'"; '+query, conn)
     conn = None
 
     return dat
@@ -71,21 +71,21 @@ def select_rows(query):
 
 def update_row(query):
     config = dotenv_values(".env")
-    with closing(psycopg2.connect(dbname=config['db_database'], user=config['db_user'],
-                                  password=config['db_password'], host=config['db_host'])) as conn:
+    with closing(psycopg2.connect(dbname=config['DB_NAME'], user=config['DB_USER'],
+                                  password=config['DB_PASSWORD'], host=config['DB_HOST'])) as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor) as cursor:
             conn.autocommit = True
-            cursor.execute(sql.SQL('SET search_path TO "'+str(config['db_schema'])+'"'))
+            cursor.execute(sql.SQL('SET search_path TO "'+str(config['DB_SCHEMA'])+'"'))
             cursor.execute(query)
 
 
 def add_result(name, values):
     config = dotenv_values(".env")
-    with closing(psycopg2.connect(dbname=config['db_database'], user=config['db_user'],
-                                  password=config['db_password'], host=config['db_host'])) as conn:
+    with closing(psycopg2.connect(dbname=config['DB_NAME'], user=config['DB_USER'],
+                                  password=config['DB_PASSWORD'], host=config['DB_HOST'])) as conn:
         with conn.cursor() as cursor:
             conn.autocommit = True
-            cursor.execute(sql.SQL('SET search_path TO "'+str(config['db_schema'])+'"'))
+            cursor.execute(sql.SQL('SET search_path TO "'+str(config['DB_SCHEMA'])+'"'))
             insert = sql.SQL('INSERT INTO '+str(name)+' (date_obs, phi, lamda, yht, pair,params,start_date) VALUES ({})').format(
                 sql.SQL(',').join(map(sql.Literal, values))
             )
@@ -94,11 +94,11 @@ def add_result(name, values):
 
 def add_row(name, values):
     config = dotenv_values(".env")
-    with closing(psycopg2.connect(dbname=config['db_database'], user=config['db_user'],
-                                  password=config['db_password'], host=config['db_host'])) as conn:
+    with closing(psycopg2.connect(dbname=config['DB_NAME'], user=config['DB_USER'],
+                                  password=config['DB_PASSWORD'], host=config['DB_HOST'])) as conn:
         with conn.cursor() as cursor:
             conn.autocommit = True
-            cursor.execute(sql.SQL('SET search_path TO "'+str(config['db_schema'])+'"'))
+            cursor.execute(sql.SQL('SET search_path TO "'+str(config['DB_SCHEMA'])+'"'))
             insert = sql.SQL('INSERT INTO '+str(name)+' VALUES (DEFAULT,{})').format(
                 sql.SQL(',').join(map(sql.Literal, values))
             )
@@ -118,10 +118,10 @@ def insert_df_rows(name, df):
         #create INSERT INTO table (columns) VALUES('%s',...)
         insert_stmt = "INSERT INTO {} ({}) {}".format(name,columns,values)
 
-        with closing(psycopg2.connect(dbname=config['db_database'], user=config['db_user'],
-                                  password=config['db_password'], host=config['db_host'])) as conn:
+        with closing(psycopg2.connect(dbname=config['DB_NAME'], user=config['DB_USER'],
+                                  password=config['DB_PASSWORD'], host=config['DB_HOST'])) as conn:
             with conn.cursor() as cursor:
-                cursor.execute(sql.SQL('SET search_path TO "'+str(config['db_schema'])+'"'))
+                cursor.execute(sql.SQL('SET search_path TO "'+str(config['DB_SCHEMA'])+'"'))
                 psycopg2.extras.execute_batch(cursor, insert_stmt, df.values)
                 conn.commit()
                 cursor.close()

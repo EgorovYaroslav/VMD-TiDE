@@ -11,3 +11,4 @@ save/*
 nohup.out
 f30/*
 generate_requirements.py
+!example.ipynb

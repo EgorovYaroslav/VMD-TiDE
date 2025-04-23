@@ -1,7 +1,6 @@
-# Project README
-
 ## Overview
-This repository contains a Python project that requires setting up a new environment with Python 3.10 and installing dependencies from `requirements.txt`. Follow the instructions below to set up and run the project.
+The project contains Python project for VMD-TiDE model.
+This repository requires setting up a new environment with Python 3.10 and installing dependencies from `requirements.txt`. Follow the instructions below to set up and run the project.
 
 ---
 
@@ -15,30 +14,45 @@ Before you begin, ensure that you have the following installed on your system:
 
 ## Installation Steps
 
+## Step 3: Install PostgreSQL
+Install PostgreSQL and create a database for the project:
+```bash
+sudo apt install postgresql postgresql-contrib -y
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+```
+
+Switch to the `postgres` user and create a database:
+```bash
+sudo -i -u postgres
+createdb forecast_project
+createuser --pwprompt forecast_user
+```
+
+Grant privileges to the user:
+```sql
+psql
+GRANT ALL PRIVILEGES ON DATABASE forecast_project TO forecast_user;
+\q
+psql -U postgres -d forecast_project
+CREATE SCHEMA f107;
+\q
+exit
+```
+
+---
+
 ### Step 1: Clone the Repository
 To get started, clone the project repository using the following command:
+
+```bash
+mkdir -m 755 projects
+cd projects
 
 ```bash
 git clone https://git.iszf.irk.ru/diegon/f107.git
 cd f107
 ```
-
-### Step 2: Set Up a Virtual Environment
-It is recommended to create a virtual environment to isolate the project dependencies. Use the following commands to set up a virtual environment:
-
-#### On Linux/MacOS:
-```bash
-python3.10 -m venv venv
-source venv/bin/activate
-```
-
-#### On Windows:
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-Once activated, your terminal should show `(venv)` at the beginning of the prompt.
 
 ### Step 3: Install Dependencies
 Install the required dependencies listed in the `requirements.txt` file using `pip`:
@@ -53,12 +67,10 @@ This will install all the necessary packages and libraries for the project.
 ---
 
 ## Running the Project
-After completing the installation steps, you can run the project. The specific commands to execute the project depend on its structure. Typically, you might run a script or start a web server. Refer to the project documentation or main entry point for details.
 
-For example:
-```bash
-python main.py
-```
+How to train and predict with model you can find in `example.ipynb` Jupyter Notebook
+
+
 
 ---
 
@@ -82,7 +94,7 @@ This project is licensed under [insert license here]. See the `LICENSE` file for
 ---
 
 ## Contact
-For any questions or issues, please contact the project maintainer at [insert contact information here].
+For any questions or issues, please contact Yaroslav Egorov at egorov@iszf.irk.ru.
 ```
 
 ---

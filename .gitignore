@@ -1,4 +1,6 @@
 selenium/*
+forecast/*
+myenv/*
 db/*
 .env
 *ipynb

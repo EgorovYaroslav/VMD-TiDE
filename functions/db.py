@@ -30,7 +30,7 @@ register_adapter(np.int32, addapt_numpy_int32)
 register_adapter(np.ndarray, addapt_numpy_array)
 
 def get_row(query):
-    config = dotenv_values(".env")
+    config = dotenv_values("/home/user/projects/f107/.env")
     with closing(psycopg2.connect(dbname=config['DB_NAME'], user=config['DB_USER'],
                                   password=config['DB_PASSWORD'], host=config['DB_HOST'])) as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor) as cursor:
@@ -41,7 +41,7 @@ def get_row(query):
 
 
 def get_rows(query):
-    config = dotenv_values(".env")
+    config = dotenv_values("/home/user/projects/f107/.env")
 
     with closing(psycopg2.connect(dbname=config['DB_NAME'], user=config['DB_USER'],
                                   password=config['DB_PASSWORD'], host=config['DB_HOST'])) as conn:
@@ -54,7 +54,7 @@ def get_rows(query):
 
 def select_rows(query):
     import pandas as pd
-    config = dotenv_values(".env")
+    config = dotenv_values("/home/user/projects/f107/.env")
 
     conn = psycopg2.connect("host='{}' dbname='{}' user={} password={}".format(
         config['DB_HOST'], config['DB_NAME'], config['DB_USER'], config['DB_PASSWORD']))
@@ -65,7 +65,7 @@ def select_rows(query):
 
 
 def update_row(query):
-    config = dotenv_values(".env")
+    config = dotenv_values("/home/user/projects/f107/.env")
     with closing(psycopg2.connect(dbname=config['DB_NAME'], user=config['DB_USER'],
                                   password=config['DB_PASSWORD'], host=config['DB_HOST'])) as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor) as cursor:
@@ -78,7 +78,7 @@ def update_row(query):
 def insert_df_rows(name, df):
 
     if len(df) > 0:
-        config = dotenv_values(".env")
+        config = dotenv_values("/home/user/projects/f107/.env")
         df_columns = list(df)
         # create (col1,col2,...)
         columns = ",".join(df_columns)
@@ -98,7 +98,7 @@ def insert_df_rows(name, df):
                 cursor.close()
 
 def insert_df(name, df):
-    config = dotenv_values(".env")
+    config = dotenv_values("/home/user/projects/f107/.env")
     DB_USER = config["DB_USER"]
     DB_PASSWORD = config["DB_PASSWORD"]
     DB_HOST = config["DB_HOST"]

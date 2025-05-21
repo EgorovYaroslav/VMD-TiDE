@@ -82,3 +82,12 @@ def check_new_real():
         return True
     else:
         return False
+
+def log_message(text):
+    from datetime import datetime
+
+    # Get current time formatted as YYYY-MM-DD HH:MM
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    with open('/home/user/projects/f107/regular_job.log', 'a') as file:
+        file.write(f"{now} {text}\n")

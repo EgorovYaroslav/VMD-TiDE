@@ -1,5 +1,16 @@
-import functions.utilites as util
-from classes.ForecastModel import ForecastModel
-if util.check_new_real():
+from functions.utilites import check_new_real, log_message
+
+if check_new_real():
+    from classes.ForecastModel import ForecastModel
     fm = ForecastModel(7)
     fm.prepare_data_decomposed()
+    log_message('Data is updated')
+else:
+    log_message('No new data')
+
+
+
+
+
+
+

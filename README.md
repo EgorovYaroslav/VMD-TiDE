@@ -191,3 +191,27 @@ This project is licensed under GPL-3.0. See the `LICENSE` file for more details.
 For any questions or issues, please contact Yaroslav Egorov at egorov@iszf.irk.ru.
 
 ---
+
+## Paper
+
+Journal Version (Acta Astronautica): https://doi.org/10.1016/j.actaastro.2025.04.027
+
+## Citation
+
+To cite this project, including the scientific basis, models and prepared dataset, please use:
+
+```
+@article{egorov_forecasting_2025,
+	title = {Forecasting {F} 10 . 7 and {F} 30 indices using the variational mode decomposition algorithm and the deep-learning {Time}-series {Dense} {Encoder} {Model}},
+	volume = {234},
+	copyright = {All rights reserved},
+	issn = {00945765},
+	url = {https://linkinghub.elsevier.com/retrieve/pii/S0094576525002279},
+	doi = {10.1016/j.actaastro.2025.04.027},	
+	journal = {Acta Astronautica},
+	author = {Egorov, Yaroslav},	
+	year = {2025},
+	pages = {455--461},	
+}
+
+```
